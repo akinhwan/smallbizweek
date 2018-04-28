@@ -1,0 +1,191 @@
+Merchant Measurement
+
+URL: https://sandbox.api.visa.com/merchantmeasurement/v1/merchantbenchmark
+
+Request Body
+
+{
+
+    "requestHeader" : {
+
+        "messageDateTime" : "2016-01-15T01:02:31.327Z",
+
+        "requestMessageId" : "6da60e1b8b024532a2e0eacb1af58581"
+
+    },
+
+    "requestData" : {
+
+        "merchantCategoryCodes" : [
+
+            "5812"
+
+        ],
+
+        "merchantCategoryGroupsCodes" : [
+
+            ""
+
+        ],
+
+        "postalCodeList" : [
+
+            "77027"
+
+        ],
+
+        "msaList" : [
+
+            ""
+
+        ],
+
+        "merchantCountry" : "",
+
+        "monthList" : [
+
+            "201501"
+
+        ],
+
+        "groupList" : [
+
+            "cardholder",
+
+            "standard"
+
+        ],
+
+        "cardPresentIndicator" : "CARDPRESENT"
+
+    }
+
+}
+
+ 
+
+Response Body
+
+ 
+
+{
+
+    "responseHeader" : {
+
+        "requestMessageId" : "6da60e1b8b024532a2e0eacb1af58581",
+
+        "messageDateTime" : "2017-05-17T18:21:41.922",
+
+        "responseMessageId" : "80MRCHBMARK9410520170517182141302",
+
+        "numRecordsReturned" : 2
+
+    },
+
+    "responseStatus" : {
+
+        "statusDescription" : "Merchant Benchmark Service - Success",
+
+        "status" : "CDI000"
+
+    },
+
+    "requestData" : {
+
+        "cardPresentIndicator" : "CARDPRESENT",
+
+        "merchantCountry" : "",
+
+        "groupList" : [
+
+            "cardholder",
+
+            "standard"
+
+        ],
+
+        "merchantCategoryCodes" : [
+
+            "5812"
+
+        ],
+
+        "merchantCategoryGroupsCodes" : [
+
+            ""
+
+        ],
+
+        "monthList" : [
+
+            "201501"
+
+        ],
+
+        "msaList" : [
+
+            ""
+
+        ],
+
+        "postalCodeList" : [
+
+            "77027"
+
+        ]
+
+    },
+
+    "response" : {
+
+        "responseData" : [
+
+            {
+
+                "groupName" : "standard",
+
+                "fraudChbktoSalesGrowthYoY" : "",
+
+                "nonfraudChbktoSalesGrowthYoY" : "",
+
+                "salesVolumeGrowthMoM" : "5000",
+
+                "salesTranCntGrowthMoM" : "",
+
+                "salesVolumeGrowthYoY" : "",
+
+                "salesTranCntGrowthYoY" : "",
+
+                "fraudChbktoSalesRatio" : "2",
+
+                "nonfraudChbktoSalesRatio" : "2"
+
+            },
+
+            {
+
+                "groupName" : "cardholder",
+
+                "cardSpendPostalCode1TotalSpendPct" : "0",
+
+                "cardSpendPostalCode2TotalSpendPct" : "0",
+
+                "cardSpendPostalCode3TotalSpendPct" : "0",
+
+                "cardSpendPostalCode4TotalSpendPct" : "0",
+
+                "cardSpendPostalCode5TotalSpendPct" : "0",
+
+                "outMSATotalSpendPct" : "0",
+
+                "outCountryTotalSpendPct" : "2",
+
+                "avgCardTranFreq" : "127.022"
+
+            }
+
+        ]
+
+    }
+
+}

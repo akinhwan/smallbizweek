@@ -1,0 +1,149 @@
+Request Body:
+
+{
+
+    "header": {
+
+                    "messageDateTime": "2017-08-23T20:43:15.903",
+
+                    "requestMessageId": "Request_001"
+
+    },
+
+    "searchAttrList": {
+
+                    "merchantName": "SAFEWAY",
+
+                    "merchantCountryCode" : "840"
+
+    },
+
+    "responseAttrList": [
+
+                    "GNSTANDARD"
+
+    ]
+
+}
+
+ 
+
+Response Body:
+
+{
+
+    "merchantSearchServiceResponse": {
+
+        "response": [
+
+            {
+
+                "responseValues": {
+
+                    "merchantCountryCode": "840",
+
+                    "paymentAcceptanceMethod": [
+
+                        "F2F"
+
+                    ],
+
+                    "terminalType": [
+
+                        "SWIPE",
+
+                        "CHIP",
+
+                       "PAYWAVE"
+
+                    ],
+
+                    "firstTranDateRange": "In last 365 days",
+
+                    "lastTranDateRange": "In last 90 days",
+
+                    "merchantCategoryCode": [
+
+                        "5411"
+
+                   ],
+
+                    "visaMerchantId": "28537864",
+
+                    "visaStoreId": "243748942",
+
+                    "merchantPhoneNumber": [],
+
+                    "visaStoreName": "SAFEWAY",
+
+                    "visaMerchantName": "SAFEWAY",
+
+                    "dbaname": [
+
+                        "SAFEWAY 3258/PCA"
+
+                    ],
+
+                    "businessLegalName": [
+
+                        "SAFEWAY, INC."
+
+                    ],
+
+                    "paymentFacilitatorName": [],
+
+                    "visaEnterpriseName": "ALBERTSONS",
+
+                    "merchantCategoryCodeDesc": [
+
+                        "GROCERY STORES/SUPERMARKETS"
+
+                    ],
+
+                    "primaryMerchantCategoryCode": "5411",
+
+                    "merchantUrl": [],
+
+                    "merchantStreetAddress": "804 W BEVERLY BLVD",
+
+                    "merchantCity": "MONTEBELLO",
+
+                    "merchantState": "CA",
+
+                    "merchantPostalCode": "90640-4213"
+
+                }
+
+            }
+
+        ],
+
+        "header": {
+
+            "startIndex": "1",
+
+            "numRecordsMatched": 3455,
+
+            "numRecordsReturned": 1,
+
+            "requestMessageId": "Request_001",
+
+            "messageDateTime": "2018-04-28T02:36:25.246",
+
+            "responseMessageId": "64VDP2818520180428023625246",
+
+            "endIndex": "1"
+
+        },
+
+        "status": {
+
+            "statusDescription": "Success",
+
+            "statusCode": "CDI000"
+
+        }
+
+    }
+
+}
