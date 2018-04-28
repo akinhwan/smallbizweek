@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue2-google-maps": "^0.9.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-beta.8",
