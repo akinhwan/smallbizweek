@@ -11,7 +11,7 @@
 
       <br/>
     <form action="">
-        <input type="checkbox" id="checkbox" v-model="isChecked" @click= "loadKMLs">
+        <input type="checkbox" id="checkbox" v-model="isChecked" @click= "toggleKMLs">
         <label for="checkbox">Toggle Zipcode Layer, {{ isChecked }}</label>
     </form>
     </div>
@@ -37,6 +37,8 @@
 import axios from 'axios';
 const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32, 36, 37, 52, 57, 64];//, 202, 317, 319, 373, 390, 510, 593];
 let styledMap;
+let visible = false;
+let kmls = [];
 export default {
   name: "GoogleMap",
   data() {
@@ -185,26 +187,40 @@ export default {
         map.setMapTypeId('styled_map');
       });
     },
-    loadKMLs(){
-      let that = this;
+    toggleKMLs(){
+      if (visible){
+        this.hideKMLs();
+      } else {
+        this.loadKMLs();
+      }
 
-      validZips.forEach ((zip)=>{
-        const link = `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/zip${20000 + zip}.kml`;
-        axios.get(link).then(()=>{
-            this.$refs.mapRef.$mapPromise.then((map) => {
-              that.kml = new google.maps.KmlLayer({
-                url: link,
-                visibility: 'visible',
-                preserveViewport: true,
-                map: map
-              })
-            })
-          }
-        ).catch(()=> console.log('not found'));
-      });
-
+      visible = !visible;
+      loaded = true;
+    },
+  loadKMLs(){
+    if(kmls.length > 0){
+      kmls.forEach((kml)=>kml.setMap(this.$refs.mapRef.$mapObject));
+      return;
     }
+    validZips.forEach ((zip)=>{
+      const link = `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/zip${20000 + zip}.kml`;
+      axios.get(link).then(()=>{
+          this.$refs.mapRef.$mapPromise.then((map) => {
+            kmls.push (new google.maps.KmlLayer({
+              url: link,
+              visibility: visible ? 'visible': 'off',
+              preserveViewport: true,
+              map: map
+            }));
+          })
+        }
+      ).catch(()=> console.log('not found'));
+    });
+  },
+  hideKMLs(){
+    kmls.forEach((kml)=>kml.setMap(null));
   }
+}
 };
 </script>
 
