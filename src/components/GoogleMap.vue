@@ -4,6 +4,7 @@
       <h2>Search and add a pin</h2>
       <label>
         <gmap-autocomplete
+          id="autocomplete"
           @place_changed="setPlace">
         </gmap-autocomplete>
         <button @click="addMarker">Add</button>
@@ -214,6 +215,48 @@ export default {
                 {lat: 38.901991, lng: -77.050110},
                 {lat: 38.896023, lng: -77.050114}
             ];
+
+            var downtownRedesigCoords = [
+                {lat: 38.902279, lng: -77.049364},
+                {lat: 38.902963, lng: -77.049708},
+                {lat: 38.909143, lng: -77.043903},
+                {lat: 38.909381, lng: -77.042712},
+                {lat: 38.907342, lng: -77.036866},
+                {lat: 38.907017, lng: -77.036528},
+                {lat: 38.900199, lng: -77.036555},
+                {lat: 38.900199, lng: -77.037950},
+                {lat: 38.898742, lng: -77.037961},
+                {lat: 38.898801, lng: -77.039452},
+            ]
+
+            var vernonRedesigCoords = [
+                {lat: 38.902946, lng: -77.021923},
+                {lat: 38.905357, lng: -77.014777},
+                {lat: 38.908559, lng: -77.015905},
+                {lat: 38.908551, lng: -77.021903}
+            ]
+            var vernonCensusCoords = [
+                {lat: 38.902936, lng: -77.021912},
+                {lat: 38.902519, lng: -77.021923},
+                {lat: 38.902516, lng: -77.009062},
+                {lat: 38.907335, lng: -77.009054}
+            ]
+            var eastendRedesigCoords = [
+                {lat: 38.902513, lng: -77.021910},
+                {lat: 38.902104, lng: -77.021910},
+                {lat: 38.901123, lng: -77.018933},
+                {lat: 38.894719, lng: -77.018939},
+                {lat: 38.894402, lng: -77.019893},
+                {lat: 38.892761, lng: -77.019899},
+                {lat: 38.891778, lng: -77.016382},
+                {lat: 38.892083, lng: -77.013168},
+                {lat: 38.893942, lng: -77.010656},
+                {lat: 38.894794, lng: -77.010946},
+                {lat: 38.894781, lng: -77.009487},
+                {lat: 38.895090, lng: -77.009058},
+                {lat: 38.902514, lng: -77.009065}
+            ]
+
             var censusTract = new google.maps.Polygon({
                 paths: censusTractCoords,
                 strokeColor: '#FF0000',
@@ -222,7 +265,43 @@ export default {
                 fillColor: '#FF0000',
                 fillOpacity: 0.35
             });
+            var downtownRedesig = new google.maps.Polygon({
+                paths: downtownRedesigCoords,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#ff9696',
+                fillOpacity: 0.35
+            });
+            var vernonRedesig = new google.maps.Polygon({
+                paths: vernonRedesigCoords,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#ff9696',
+                fillOpacity: 0.35
+            });
+            var vernonCensus = new google.maps.Polygon({
+                paths: vernonCensusCoords,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35
+            });
+            var eastendRedesig = new google.maps.Polygon({
+                paths: eastendRedesigCoords,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#ff9696',
+                fillOpacity: 0.35
+            });
             censusTract.setMap(this.$refs.mapRef.$mapObject);
+            downtownRedesig.setMap(this.$refs.mapRef.$mapObject);
+            vernonRedesig.setMap(this.$refs.mapRef.$mapObject);
+            vernonCensus.setMap(this.$refs.mapRef.$mapObject);
+            eastendRedesig.setMap(this.$refs.mapRef.$mapObject);
         })
     },
   loadKMLs(){
@@ -255,5 +334,8 @@ export default {
 <style scoped>
 h2{
     margin: 0;
+}
+#autocomplete{
+    width: 35%;
 }
 </style>
