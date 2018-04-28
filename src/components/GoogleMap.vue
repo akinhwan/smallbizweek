@@ -30,6 +30,7 @@
 </template>
 <script>
 import axios from 'axios';
+const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32, 36, 37, 52, 57, 64];//, 202, 317, 319, 373, 390, 510, 593];
 export default {
   name: "GoogleMap",
   data() {
@@ -75,9 +76,9 @@ export default {
     },
     loadKMLs(){
       let that = this;
-      for(let i = 1; i <= 55; i++){
-        const link = `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/zip${20000 + i}.kml`;
-        console.log(link);
+
+      validZips.forEach ((zip)=>{
+        const link = `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/zip${20000 + zip}.kml`;
         axios.get(link).then(()=>{
             this.$refs.mapRef.$mapPromise.then((map) => {
               that.kml = new google.maps.KmlLayer({
@@ -89,7 +90,7 @@ export default {
             })
           }
         ).catch(()=> console.log('not found'));
-      }
+      });
 
     }
   }
