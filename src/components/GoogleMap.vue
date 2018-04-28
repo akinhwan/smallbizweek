@@ -8,8 +8,12 @@
         </gmap-autocomplete>
         <button @click="addMarker">Add</button>
       </label>
-      <br/>
 
+      <br/>
+    <form action="">
+        <input type="checkbox" id="checkbox" v-model="isChecked" @click= "loadKMLs">
+        <label for="checkbox">Toggle Zipcode Layer, {{ isChecked }}</label>
+    </form>
     </div>
     <br>
     <gmap-map
@@ -41,17 +45,19 @@ export default {
       center: { lat: 38.8938, lng: 77.0310 },
       markers: [],
       places: [],
-      currentPlace: null
+      currentPlace: null,
+      isChecked: ''
     };
   },
 
   mounted() {
     this.geolocate();
-    this.loadKMLs();
+    // this.loadKMLs();
   },
 
   methods: {
     // receives a place object via the autocomplete component
+
     setPlace(place) {
       this.currentPlace = place;
     },
@@ -61,7 +67,7 @@ export default {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng()
         };
-        this.markers.push({ position: marker, icon: 'https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_one.svg' });
+        this.markers.push({ position: marker, icon: 'https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_one.png' });
         this.places.push(this.currentPlace);
         this.center = marker;
         this.currentPlace = null;
