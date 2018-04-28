@@ -13,7 +13,9 @@
       <br/>
     <form action="">
         <input type="checkbox" id="checkbox" v-model="isChecked" @click= "toggleKMLs">
-        <label for="checkbox">Toggle Zipcode Layer, {{ isChecked }}</label>
+        <label for="checkbox">Toggle Zipcode Layer</label>
+        <input type="checkbox" id="checkbox-zone" @click= "toggleZones">
+        <label for="checkbox-zone">Toggle HUB Layer</label>
     </form>
     </div>
     <br>
@@ -41,6 +43,8 @@ import axios from 'axios';
 const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32, 36, 37, 52, 57, 64];//, 202, 317, 319, 373, 390, 510, 593];
 let styledMap;
 let visible = false;
+let visibleHUB = false;
+let HUBs = [];
 let kmls = [];
 let buildingCount = 0;
 export default {
@@ -59,7 +63,6 @@ export default {
 
   mounted() {
     this.geolocate();
-    // this.loadKMLs();
     this.setStyles();
     this.drawHubZones();
   },
@@ -265,7 +268,7 @@ export default {
                 fillColor: '#FF0000',
                 fillOpacity: 0.35
             });
-            var downtownRedesig = new google.maps.Polygon({
+            let downtownRedesig = new google.maps.Polygon({
                 paths: downtownRedesigCoords,
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
@@ -273,7 +276,7 @@ export default {
                 fillColor: '#ff9696',
                 fillOpacity: 0.35
             });
-            var vernonRedesig = new google.maps.Polygon({
+            let vernonRedesig = new google.maps.Polygon({
                 paths: vernonRedesigCoords,
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
@@ -281,7 +284,7 @@ export default {
                 fillColor: '#ff9696',
                 fillOpacity: 0.35
             });
-            var vernonCensus = new google.maps.Polygon({
+            let vernonCensus = new google.maps.Polygon({
                 paths: vernonCensusCoords,
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
@@ -289,7 +292,7 @@ export default {
                 fillColor: '#FF0000',
                 fillOpacity: 0.35
             });
-            var eastendRedesig = new google.maps.Polygon({
+            let eastendRedesig = new google.maps.Polygon({
                 paths: eastendRedesigCoords,
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
@@ -297,12 +300,16 @@ export default {
                 fillColor: '#ff9696',
                 fillOpacity: 0.35
             });
-            censusTract.setMap(this.$refs.mapRef.$mapObject);
-            downtownRedesig.setMap(this.$refs.mapRef.$mapObject);
-            vernonRedesig.setMap(this.$refs.mapRef.$mapObject);
-            vernonCensus.setMap(this.$refs.mapRef.$mapObject);
-            eastendRedesig.setMap(this.$refs.mapRef.$mapObject);
+            HUBs.push(censusTract, downtownRedesig,vernonRedesig,vernonCensus,eastendRedesig);
         })
+    },
+    toggleZones(){
+      if (visibleHUB){
+        HUBs.forEach((hub)=> hub.setMap(null))
+      } else {
+        HUBs.forEach((hub)=> hub.setMap(this.$refs.mapRef.$mapObject));
+      }
+      visibleHUB = !visibleHUB
     },
   loadKMLs(){
     if(kmls.length > 0){
