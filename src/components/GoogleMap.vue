@@ -23,6 +23,7 @@
         :key="index"
         v-for="(m, index) in markers"
         :position="m.position"
+        :icon="m.icon"
         @click="center=m.position"
       ></gmap-marker>
     </gmap-map>
@@ -59,7 +60,7 @@ export default {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng()
         };
-        this.markers.push({ position: marker });
+        this.markers.push({ position: marker, icon: 'https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_one.svg' });
         this.places.push(this.currentPlace);
         this.center = marker;
         this.currentPlace = null;
