@@ -55,6 +55,7 @@ export default {
     this.geolocate();
     // this.loadKMLs();
     this.setStyles();
+    this.drawHubZones();
   },
 
   methods: {
@@ -83,6 +84,7 @@ export default {
         };
       });
     },
+
     setStyles() {
       this.$refs.mapRef.$mapPromise.then((map) => {
         styledMap = new google.maps.StyledMapType(
@@ -203,6 +205,28 @@ export default {
         ).catch(()=> console.log('not found'));
       });
 
+    },
+    drawHubZones(){
+        this.$refs.mapRef.$mapPromise.then((map) => {
+            var censusTractCoords = [
+                {lat: 38.896012, lng: -77.047979},
+                {lat: 38.892046, lng: -77.040748},
+                {lat: 38.892079, lng: -77.039482},
+                {lat: 38.898793, lng: -77.039460},
+                {lat: 38.902249, lng: -77.049355},
+                {lat: 38.901991, lng: -77.050110},
+                {lat: 38.896023, lng: -77.050114}          
+            ];
+            var censusTract = new google.maps.Polygon({
+                paths: censusTractCoords,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35
+            });
+            censusTract.setMap(this.$refs.mapRef.$mapObject);
+        })
     }
   }
 };
