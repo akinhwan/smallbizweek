@@ -13,6 +13,7 @@
     </div>
     <br>
     <gmap-map
+      ref = "mapRef"
       :center="center"
       :zoom="15"
       style="width:100%;  height: 700px;"
@@ -27,8 +28,8 @@
     </gmap-map>
   </div>
 </template>
-
 <script>
+import axios from 'axios';
 export default {
   name: "GoogleMap",
   data() {
@@ -44,6 +45,7 @@ export default {
 
   mounted() {
     this.geolocate();
+    this.loadKMLs();
   },
 
   methods: {
@@ -70,6 +72,25 @@ export default {
           lng: position.coords.longitude
         };
       });
+    },
+    loadKMLs(){
+      let that = this;
+      for(let i = 1; i <= 55; i++){
+        const link = `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/zip${20000 + i}.kml`;
+        console.log(link);
+        axios.get(link).then(()=>{
+            this.$refs.mapRef.$mapPromise.then((map) => {
+              that.kml = new google.maps.KmlLayer({
+                url: link,
+                visibility: 'visible',
+                preserveViewport: true,
+                map: map
+              })
+            })
+          }
+        ).catch(()=> console.log('not found'));
+      }
+
     }
   }
 };
