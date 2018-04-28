@@ -24,10 +24,12 @@
       map-type-id="roadmap"
     >
       <gmap-marker
+        ref = "markers"
         :key="index"
         v-for="(m, index) in markers"
         :position="m.position"
         :icon="m.icon"
+        :animation = "m.animation"
         @click="center=m.position"
       ></gmap-marker>
     </gmap-map>
@@ -39,6 +41,7 @@ const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20
 let styledMap;
 let visible = false;
 let kmls = [];
+let buildingCount = 0;
 export default {
   name: "GoogleMap",
   data() {
@@ -72,9 +75,12 @@ export default {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng()
         };
-        this.markers.push({ position: marker, icon: 'https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_one.png' });
-        this.places.push(this.currentPlace);
+        const building = ['one', 'two', 'three'];
+        this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
         this.center = marker;
+        ++buildingCount;
+        if (buildingCount > 2) buildingCount = 0;
+        this.places.push(this.currentPlace);
         this.currentPlace = null;
       }
     },
@@ -195,9 +201,7 @@ export default {
       } else {
         this.loadKMLs();
       }
-
       visible = !visible;
-      loaded = true;
     },
     drawHubZones(){
         this.$refs.mapRef.$mapPromise.then((map) => {
@@ -208,7 +212,7 @@ export default {
                 {lat: 38.898793, lng: -77.039460},
                 {lat: 38.902249, lng: -77.049355},
                 {lat: 38.901991, lng: -77.050110},
-                {lat: 38.896023, lng: -77.050114}          
+                {lat: 38.896023, lng: -77.050114}
             ];
             var censusTract = new google.maps.Polygon({
                 paths: censusTractCoords,
