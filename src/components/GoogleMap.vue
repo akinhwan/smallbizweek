@@ -53,12 +53,8 @@ export default {
 
   mounted() {
     this.geolocate();
-<<<<<<< HEAD
     // this.loadKMLs();
-=======
     this.setStyles();
-    this.loadKMLs();
->>>>>>> 5332956216d977bc5f410657a09cfc7879de9ccd
   },
 
   methods: {
