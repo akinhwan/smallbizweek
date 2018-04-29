@@ -39,13 +39,7 @@
         :position="m.position"
         :icon="m.icon"
         :animation = "m.animation"
-        @click="center=m.position; isOpened = !isOpened"
       >
-        <gmap-info-window :position="m.position" :opened="isOpened">
-          <p>{{generateName()}}</p>
-          <p>{{generateContact()}}</p>
-          <p>{{ categoryGroup() }}</p>
-        </gmap-info-window>
 
       </gmap-marker>
     </gmap-map>
@@ -62,6 +56,7 @@ let visibleHUB = false;
 let HUBs = [];
 let kmls = [];
 let buildingCount = 0;
+let infoWindows = [];
 
 export default {
   name: "GoogleMap",
@@ -128,13 +123,13 @@ export default {
     var merchants20001 = merchants.filter(mch => mch.address.includes('20001'));
     var merchants20024 = merchants.filter(mch => mch.address.includes('20024'));
 
-    const m4_shuffle = merchants20004.sort(() => .5 - Math.random()); 
+    const m4_shuffle = merchants20004.sort(() => .5 - Math.random());
     let m4_selected =m4_shuffle.slice(0,10) ;
-    const m5_shuffle = merchants20005.sort(() => .5 - Math.random()); 
+    const m5_shuffle = merchants20005.sort(() => .5 - Math.random());
     let m5_selected =m5_shuffle.slice(0,10) ;
-    const m1_shuffle = merchants20001.sort(() => .5 - Math.random()); 
+    const m1_shuffle = merchants20001.sort(() => .5 - Math.random());
     let m1_selected =m1_shuffle.slice(0,10) ;
-    const m24_shuffle = merchants20024.sort(() => .5 - Math.random()); 
+    const m24_shuffle = merchants20024.sort(() => .5 - Math.random());
     let m24_selected =m24_shuffle.slice(0,10) ;
 
     // console.log("ZIP 4", merchants20004);
@@ -199,7 +194,7 @@ export default {
       }
       const building = ['one', 'two', 'three'];
       this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
-      
+
       //marker infoWindow event Listener
       // var contentString=`<div>helloooooooooooo</div>`
       // var infowindow = new google.maps.InfoWindow({
@@ -214,6 +209,21 @@ export default {
         this.places.push(this.currentPlace);
       }
 
+      infoWindows.push(new google.maps.InfoWindow({
+        content: `          <p>${this.generateName()}</p>
+                  <p>${this.generateContact()}</p>
+                  <p>${ this.categoryGroup()}</p>`
+      }));
+
+      this.$refs.mapRef.$mapPromise.then((map) => {
+        const that = this;
+        let last = that.markers.length -1;
+        that.$refs.markers[that.markers.length-1].$markerPromise.then((marker)=>{
+          marker.addListener('click', ()=>{
+            infoWindows[last].open(this.$refs.mapRef.$mapObject, marker);
+            });
+          });
+        });
       this.currentPlace = null;
       ++buildingCount;
       if (buildingCount > 2) buildingCount = 0;
