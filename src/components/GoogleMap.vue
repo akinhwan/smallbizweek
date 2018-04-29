@@ -87,7 +87,7 @@ export default {
         this.errors.push(e)
       })
     })
-    
+
   },
   mounted() {
     var merchants20004 = merchants.filter(mch => mch.address.includes('20004'));
@@ -100,18 +100,18 @@ export default {
     // console.log("ZIP 1", merchants20001);
     // console.log("ZIP 24", merchants20024);
 
-    // this.$refs.mapRef.$mapPromise.then(()=>{
-    //   this.geolocate();
-    //   this.setStyles();
-    //   this.drawHubZones();
+    this.$refs.mapRef.$mapPromise.then(()=>{
+      this.geolocate();
+      this.setStyles();
+      this.drawHubZones();
 
-    //   for (var x = 0, ln = merchants20004.length; x < ln; x++) {
-    //     setTimeout((y) => {    
-    //       this.findLatLong(merchants20004[y]);
-    //     }, x * 500, x); 
-    //   }
+      for (var x = 0, ln = merchants20004.length; x < ln; x++) {
+        setTimeout((y) => {
+          this.findLatLong(merchants20004[y]);
+        }, x * 500, x);
+      }
 
-    // });
+    });
 
   },
 
@@ -382,10 +382,10 @@ export default {
             kmls[kmls.length - 1].addListener('click', (kmlEvent)=>{
               kmlEvent.featureData.infoWindowHtml = `<div style="font-family: Roboto,Arial,sans-serif; font-size: small"><div style="font-weight: 500; font-size: medium; margin-bottom: 0em"></div><div><center><table><tbody><tr><th colspan="2" align="center"><em>Transaction Data</em></th></tr><tr bgcolor="#E3E3F3">
               <th>Zip code</th>
-              <td>20001</td>
+              <td>${20000 + zip}</td>
               </tr><tr bgcolor="">
               <th>Avg Transaction</th>
-              <td>Many Trillions</td>
+              <td>${this.merchantMeasurements[Math.floor(Math.random()*4)]}</td>
               </tr></tbody></table></center></div></div>`;
             });
           })
