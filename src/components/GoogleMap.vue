@@ -40,6 +40,7 @@
 </template>
 <script>
 import axios from 'axios';
+import {merchants} from './merchants.js';
 const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32, 36, 37, 52, 57, 64];//, 202, 317, 319, 373, 390, 510, 593];
 let styledMap;
 let visible = false;
@@ -47,6 +48,7 @@ let visibleHUB = false;
 let HUBs = [];
 let kmls = [];
 let buildingCount = 0;
+
 export default {
   name: "GoogleMap",
   data() {
@@ -62,9 +64,14 @@ export default {
   },
 
   mounted() {
-    this.geolocate();
-    this.setStyles();
-    this.drawHubZones();
+    this.$refs.mapRef.$mapPromise.then(()=>{
+      this.geolocate();
+      this.setStyles();
+      this.drawHubZones();
+      for(let i = 0; i < 49; i++){
+        this.findLatLong(merchants[i]);
+      }
+    });
   },
 
   methods: {
@@ -73,20 +80,27 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
-    addMarker() {
-      if (this.currentPlace) {
-        const marker = {
+    addMarker(scriptMarker) {
+      let marker;
+      if (scriptMarker){
+        marker = scriptMarker;
+      } else if (this.currentPlace) {
+        marker = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng()
         };
-        const building = ['one', 'two', 'three'];
-        this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
-        this.center = marker;
-        ++buildingCount;
-        if (buildingCount > 2) buildingCount = 0;
-        this.places.push(this.currentPlace);
-        this.currentPlace = null;
       }
+      const building = ['one', 'two', 'three'];
+      this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
+        if (this.currentPlace) {
+
+          // this.center = marker;
+          this.places.push(this.currentPlace);
+        }
+
+        this.currentPlace = null;
+      ++buildingCount;
+      if (buildingCount > 2) buildingCount = 0;
     },
     geolocate: function() {
       navigator.geolocation.getCurrentPosition(position => {
@@ -333,6 +347,18 @@ export default {
   },
   hideKMLs(){
     kmls.forEach((kml)=>kml.setMap(null));
+  },
+  findLatLong({address}){
+    this.$refs.mapRef.$mapPromise.then((map) => {
+      let geocoder = new google.maps.Geocoder();
+      geocoder.geocode({address: address}, (result, status) => {
+        if (status === 'OK'){
+          this.addMarker(result[0].geometry.location);
+        } else {
+          console.log(`Failed: ${status}`)
+        }
+      });
+    });
   }
 }
 };
