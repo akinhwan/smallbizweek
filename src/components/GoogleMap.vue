@@ -60,27 +60,34 @@ export default {
       places: [],
       merchantMeasurements: [],
       currentPlace: null,
-      isChecked: ''
+      isChecked: '',
+      errors: []
     };
   },
   created(){
     var baseURL = 'http://ec2-34-238-116-47.compute-1.amazonaws.com'
-    var zipcode = '20004'
-    axios.get(`${baseURL}/api/merchant/searchByZipCode/${zipcode}`, {
+    var zipcodes= ['20004', '20005', '20001', '20024']
+    zipcodes.forEach((zc) => {
+      axios.get(`${baseURL}/api/merchant/searchByZipCode/${zc}`, {
       headers:{
         "Access-Control-Allow-Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "charset": "utf-8"
-      }
+        }
+      })
+      .then(response => {
+        // JSON responses are automatically parsed.
+        // this.merchantMeasurements = response.data
+        var actf = response.data[0].response.responseData[1].avgCardTranFreq;
+        console.log(actf);
+        // console.log(response.data.response.responseData[1].avgCardTranFreq);
+        this.merchantMeasurements.push(actf);
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
     })
-    .then(response => {
-      // JSON responses are automatically parsed.
-      this.merchantMeasurements = response.data
-      console.log(merchantMeasurements);
-    })
-    .catch(e => {
-      this.errors.push(e)
-    })
+    
   },
   mounted() {
     var merchants20004 = merchants.filter(mch => mch.address.includes('20004'));
@@ -93,18 +100,19 @@ export default {
     // console.log("ZIP 1", merchants20001);
     // console.log("ZIP 24", merchants20024);
 
-    this.$refs.mapRef.$mapPromise.then(()=>{
-      this.geolocate();
-      this.setStyles();
-      this.drawHubZones();
+    // this.$refs.mapRef.$mapPromise.then(()=>{
+    //   this.geolocate();
+    //   this.setStyles();
+    //   this.drawHubZones();
 
-      for (var x = 0, ln = merchants20004.length; x < ln; x++) {
-        setTimeout((y) => {    
-          this.findLatLong(merchants20004[y]);
-        }, x * 500, x); 
-      }
+    //   for (var x = 0, ln = merchants20004.length; x < ln; x++) {
+    //     setTimeout((y) => {    
+    //       this.findLatLong(merchants20004[y]);
+    //     }, x * 500, x); 
+    //   }
 
-    });
+    // });
+
   },
 
   methods: {
