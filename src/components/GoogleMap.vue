@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h2>Search and add a pin</h2>
+      <h2></h2>
       <label>
         <gmap-autocomplete
           id="autocomplete"
@@ -58,19 +58,52 @@ export default {
       center: { lat: 38.8938, lng: 77.0310 },
       markers: [],
       places: [],
+      merchantMeasurements: [],
       currentPlace: null,
       isChecked: ''
     };
   },
-
+  created(){
+    var baseURL = 'http://ec2-34-238-116-47.compute-1.amazonaws.com'
+    var zipcode = '20004'
+    axios.get(`${baseURL}/api/merchant/searchByZipCode/${zipcode}`, {
+      headers:{
+        "Access-Control-Allow-Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "charset": "utf-8"
+      }
+    })
+    .then(response => {
+      // JSON responses are automatically parsed.
+      this.merchantMeasurements = response.data
+      console.log(merchantMeasurements);
+    })
+    .catch(e => {
+      this.errors.push(e)
+    })
+  },
   mounted() {
+    var merchants20004 = merchants.filter(mch => mch.address.includes('20004'));
+    var merchants20005 = merchants.filter(mch => mch.address.includes('20005'));
+    var merchants20001 = merchants.filter(mch => mch.address.includes('20001'));
+    var merchants20024 = merchants.filter(mch => mch.address.includes('20024'));
+
+    // console.log("ZIP 4", merchants20004);
+    // console.log("ZIP 5", merchants20005);
+    // console.log("ZIP 1", merchants20001);
+    // console.log("ZIP 24", merchants20024);
+
     this.$refs.mapRef.$mapPromise.then(()=>{
       this.geolocate();
       this.setStyles();
       this.drawHubZones();
-      for(let i = 0; i < 49; i++){
-        this.findLatLong(merchants[i]);
+
+      for (var x = 0, ln = merchants20004.length; x < ln; x++) {
+        setTimeout((y) => {    
+          this.findLatLong(merchants20004[y]);
+        }, x * 500, x); 
       }
+
     });
   },
 
