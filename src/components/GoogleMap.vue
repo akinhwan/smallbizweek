@@ -115,7 +115,7 @@ export default {
     },
     addMarker(scriptMarker) {
       let marker;
-      if (scriptMarker){
+      if (scriptMarker.type !== 'click'){
         marker = scriptMarker;
       } else if (this.currentPlace) {
         marker = {
@@ -125,13 +125,11 @@ export default {
       }
       const building = ['one', 'two', 'three'];
       this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
-        if (this.currentPlace) {
+      if (this.currentPlace) {
+        this.places.push(this.currentPlace);
+      }
 
-          // this.center = marker;
-          this.places.push(this.currentPlace);
-        }
-
-        this.currentPlace = null;
+      this.currentPlace = null;
       ++buildingCount;
       if (buildingCount > 2) buildingCount = 0;
     },
@@ -373,6 +371,15 @@ export default {
               preserveViewport: true,
               map: map
             }));
+            kmls[kmls.length - 1].addListener('click', (kmlEvent)=>{
+              kmlEvent.featureData.infoWindowHtml = `<div style="font-family: Roboto,Arial,sans-serif; font-size: small"><div style="font-weight: 500; font-size: medium; margin-bottom: 0em"></div><div><center><table><tbody><tr><th colspan="2" align="center"><em>Transaction Data</em></th></tr><tr bgcolor="#E3E3F3">
+              <th>Zip code</th>
+              <td>20001</td>
+              </tr><tr bgcolor="">
+              <th>Avg Transaction</th>
+              <td>Many Trillions</td>
+              </tr></tbody></table></center></div></div>`;
+            });
           })
         }
       ).catch(()=> console.log('not found'));
