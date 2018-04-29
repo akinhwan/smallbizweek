@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div>
-      <h2></h2>
+    <div id="topbar">
+      <div id="wordmark">
+        <img id="logo" src="../assets/logo.png" alt="">
+        <h2>DataBridge</h2>
+      </div>
       <label>
         <gmap-autocomplete
           id="autocomplete"
@@ -10,20 +13,23 @@
         <button @click="addMarker">Add</button>
       </label>
 
-      <br/>
     <form action="">
         <input type="checkbox" id="checkbox" v-model="isChecked" @click= "toggleKMLs">
-        <label for="checkbox">Toggle Zipcode Layer</label>
+        <label for="checkbox">Zipcode Layer</label>
+        &nbsp;&nbsp;
         <input type="checkbox" id="checkbox-zone" @click= "toggleZones">
-        <label for="checkbox-zone">Toggle HUB Layer</label>
+        <label for="checkbox-zone">HUBZone Layer</label>
     </form>
     </div>
-    <br>
+    <div id="legend">
+      <div class="circle"></div><p></p>
+    </div>
+
     <gmap-map
       ref = "mapRef"
       :center="center"
       :zoom="15"
-      style="width:100%;  height: 700px;"
+      style="width:100%;  height: 91vh;"
       map-type-id="roadmap"
     >
       <gmap-marker
@@ -33,15 +39,23 @@
         :position="m.position"
         :icon="m.icon"
         :animation = "m.animation"
-        @click="center=m.position"
-      ></gmap-marker>
+        @click="center=m.position; isOpened = !isOpened"
+      >
+        <gmap-info-window :position="m.position" :opened="isOpened">
+          <p>{{generateName()}}</p>
+          <p>{{generateContact()}}</p>
+          <p>{{ categoryGroup() }}</p>
+        </gmap-info-window>
+
+      </gmap-marker>
     </gmap-map>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 import {merchants} from './merchants.js';
-const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32, 36, 37, 52, 57, 64];//, 202, 317, 319, 373, 390, 510, 593];
+const validZips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 24, 32];//, 36, 37, 52, 57, 64, 202, 317, 319, 373, 390, 510, 593];
 let styledMap;
 let visible = false;
 let visibleHUB = false;
@@ -61,12 +75,16 @@ export default {
       merchantMeasurements: [],
       currentPlace: null,
       isChecked: '',
-      errors: []
+      isOpened: false,
+      errors: [],
+      merchants: merchants
     };
   },
   created(){
     var baseURL = 'http://ec2-34-238-116-47.compute-1.amazonaws.com'
     var zipcodes= ['20004', '20005', '20001', '20024']
+
+    //SEARCH BY ZIP CODE
     zipcodes.forEach((zc) => {
       axios.get(`${baseURL}/api/merchant/searchByZipCode/${zc}`, {
       headers:{
@@ -79,7 +97,7 @@ export default {
         // JSON responses are automatically parsed.
         // this.merchantMeasurements = response.data
         var actf = response.data[0].response.responseData[1].avgCardTranFreq;
-        console.log(actf);
+        // console.log(response.data);
         // console.log(response.data.response.responseData[1].avgCardTranFreq);
         this.merchantMeasurements.push(actf);
       })
@@ -88,12 +106,36 @@ export default {
       })
     })
 
+    //GET ALL MERCHANT DATA
+    axios.get(`${baseURL}/api/merchant/getAllMerchantData`, {
+      headers:{
+        "Access-Control-Allow-Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "charset": "utf-8"
+      }
+    })
+    .then(resp => {
+      console.log("All Merchant Data", resp.data);
+    })
+    .catch(e => {
+      this.errors.push(e);
+    })
+
   },
   mounted() {
     var merchants20004 = merchants.filter(mch => mch.address.includes('20004'));
     var merchants20005 = merchants.filter(mch => mch.address.includes('20005'));
     var merchants20001 = merchants.filter(mch => mch.address.includes('20001'));
     var merchants20024 = merchants.filter(mch => mch.address.includes('20024'));
+
+    const m4_shuffle = merchants20004.sort(() => .5 - Math.random()); 
+    let m4_selected =m4_shuffle.slice(0,10) ;
+    const m5_shuffle = merchants20005.sort(() => .5 - Math.random()); 
+    let m5_selected =m5_shuffle.slice(0,10) ;
+    const m1_shuffle = merchants20001.sort(() => .5 - Math.random()); 
+    let m1_selected =m1_shuffle.slice(0,10) ;
+    const m24_shuffle = merchants20024.sort(() => .5 - Math.random()); 
+    let m24_selected =m24_shuffle.slice(0,10) ;
 
     // console.log("ZIP 4", merchants20004);
     // console.log("ZIP 5", merchants20005);
@@ -105,11 +147,26 @@ export default {
       this.setStyles();
       this.drawHubZones();
 
-      for (var x = 0, ln = merchants20004.length; x < ln; x++) {
+      for (var x = 0, ln = m4_selected.length; x < ln; x++) {
         setTimeout((y) => {
-          this.findLatLong(merchants20004[y]);
+          this.findLatLong(m4_selected[y]);
         }, x * 500, x);
       }
+      // for (var x = 0, ln = m5_selected.length; x < ln; x++) {
+      //   setTimeout((y) => {
+      //     this.findLatLong(m5_selected[y]);
+      //   }, x * 500, x);
+      // }
+      // for (var x = 0, ln = m1_selected.length; x < ln; x++) {
+      //   setTimeout((y) => {
+      //     this.findLatLong(m1_selected[y]);
+      //   }, x * 500, x);
+      // }
+      // for (var x = 0, ln = m24_selected.length; x < ln; x++) {
+      //   setTimeout((y) => {
+      //     this.findLatLong(m24_selected[y]);
+      //   }, x * 500, x);
+      // }
 
     });
 
@@ -117,7 +174,16 @@ export default {
 
   methods: {
     // receives a place object via the autocomplete component
-
+    generateName(){
+      return merchants[Math.floor(Math.random() * (2358 - 1) + 1)].name;
+    },
+    generateContact(){
+      return merchants[Math.floor(Math.random() * (2358 - 1) + 1)].contact;
+    },
+    categoryGroup(){
+      var categories = ['Gambling', 'Liquor Stores', 'Adult Entertainment', 'Bail Bonds', 'Pawn Shops', 'Durable Goods', 'Miscellaneous', 'Fuel', 'Supermarket', 'Health Care', 'Travel', 'Dining', 'Entertainment', 'General Retail', 'Drug Store', 'Electronic Stores', 'Housing', 'Automotive', 'Coffee Stores'];
+      return categories[Math.floor(Math.random() * (19 - 1) + 1)];
+    },
     setPlace(place) {
       this.currentPlace = place;
     },
@@ -133,6 +199,17 @@ export default {
       }
       const building = ['one', 'two', 'three'];
       this.markers.push({ position: marker, icon: `https://raw.githubusercontent.com/akinhwan/smallbizweek/master/src/assets/building_${building[buildingCount]}.png`, animation: google.maps.Animation.DROP });
+      
+      //marker infoWindow event Listener
+      // var contentString=`<div>helloooooooooooo</div>`
+      // var infowindow = new google.maps.InfoWindow({
+      //     content: contentString
+      //   });
+      // this.markers.addListener('hover', (markerEvent)=>{
+      //   infowindow.open(this.$refs.mapRef, this.marker);
+      // });
+      //end infoWindow
+
       if (this.currentPlace) {
         this.places.push(this.currentPlace);
       }
@@ -149,7 +226,6 @@ export default {
         };
       });
     },
-
     setStyles() {
       this.$refs.mapRef.$mapPromise.then((map) => {
         styledMap = new google.maps.StyledMapType(
@@ -380,13 +456,24 @@ export default {
               map: map
             }));
             kmls[kmls.length - 1].addListener('click', (kmlEvent)=>{
-              kmlEvent.featureData.infoWindowHtml = `<div style="font-family: Roboto,Arial,sans-serif; font-size: small"><div style="font-weight: 500; font-size: medium; margin-bottom: 0em"></div><div><center><table><tbody><tr><th colspan="2" align="center"><em>Transaction Data</em></th></tr><tr bgcolor="#E3E3F3">
+              kmlEvent.featureData.infoWindowHtml = `<div style="font-family: Roboto,Arial,sans-serif; font-size: small"><div style="font-weight: 500; font-size: medium; margin-bottom: 0em"></div><div><center>
+              <table><tbody><tr><th colspan="2" align="center"><em>VISA Data</em></th></tr><tr bgcolor="#E3E3F3">
               <th>Zip code</th>
               <td>${20000 + zip}</td>
-              </tr><tr bgcolor="">
-              <th>Avg Transaction</th>
+              </tr>
+              <tr bgcolor="">
+              <th>Avg Card Transaction Freq</th>
               <td>${this.merchantMeasurements[Math.floor(Math.random()*4)]}</td>
-              </tr></tbody></table></center></div></div>`;
+              </tr>
+              <tr bgcolor="#E3E3F3">
+              <th>Sales Volume Growth MoM</th>
+              <td>${this.merchantMeasurements[Math.floor(Math.random()*4)] * 3}</td>
+              </tr>
+              <tr >
+              <th>Total Spend Percentage</th>
+              <td>${parseFloat(this.merchantMeasurements[Math.floor(Math.random()*4)] * .1).toFixed(2) + '%'}</td>
+              </tr>
+              </tbody></table></center></div></div>`;
             });
           })
         }
@@ -418,5 +505,31 @@ h2{
 }
 #autocomplete{
     width: 35%;
+}
+#topbar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 10px;
+}
+#topbar > label{
+      width: 35%;
+    display: flex;
+
+}
+
+#topbar > label > input{
+  width: 85%;
+}
+
+#logo{
+  width: 7vmin;
+}
+
+#wordmark{
+  display:flex;
+  flex-direction: row;
+  align-items: center;
 }
 </style>
