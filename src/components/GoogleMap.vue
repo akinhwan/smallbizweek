@@ -92,7 +92,7 @@ export default {
         // JSON responses are automatically parsed.
         // this.merchantMeasurements = response.data
         var actf = response.data[0].response.responseData[1].avgCardTranFreq;
-        // console.log(response.data);
+        console.log(response.data);
         // console.log(response.data.response.responseData[1].avgCardTranFreq);
         this.merchantMeasurements.push(actf);
       })
@@ -145,23 +145,23 @@ export default {
       for (var x = 0, ln = m4_selected.length; x < ln; x++) {
         setTimeout((y) => {
           this.findLatLong(m4_selected[y]);
-        }, x * 500, x);
+        }, x * 1000, x);
       }
-      // for (var x = 0, ln = m5_selected.length; x < ln; x++) {
-      //   setTimeout((y) => {
-      //     this.findLatLong(m5_selected[y]);
-      //   }, x * 500, x);
-      // }
-      // for (var x = 0, ln = m1_selected.length; x < ln; x++) {
-      //   setTimeout((y) => {
-      //     this.findLatLong(m1_selected[y]);
-      //   }, x * 500, x);
-      // }
-      // for (var x = 0, ln = m24_selected.length; x < ln; x++) {
-      //   setTimeout((y) => {
-      //     this.findLatLong(m24_selected[y]);
-      //   }, x * 500, x);
-      // }
+      for (var x = 0, ln = m5_selected.length; x < ln; x++) {
+        setTimeout((y) => {
+          this.findLatLong(m5_selected[y]);
+        }, x * 1000, x);
+      }
+      for (var x = 0, ln = m1_selected.length; x < ln; x++) {
+        setTimeout((y) => {
+          this.findLatLong(m1_selected[y]);
+        }, x * 1000, x);
+      }
+      for (var x = 0, ln = m24_selected.length; x < ln; x++) {
+        setTimeout((y) => {
+          this.findLatLong(m24_selected[y]);
+        }, x * 1000, x);
+      }
 
     });
 
